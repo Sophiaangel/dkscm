@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.ekgc.dkscm.dao.MenuDao">
+	<select id="findListByQuery" parameterType="java.util.Map" resultMap="menuMap">
+		SELECT
+			sm.menu_id,
+			sm.menu_text,
+			sm.menu_url,
+			sm.menu_icon
+		FROM
+			sys_menu sm JOIN sys_role_menu srm ON sm.menu_id=srm.menu_id
+		<trim suffixOverrides="and">
+			<where>
+				<if test="roleId != null">srm.role_id=#{roleId} and</if>
+				<if test="parentId != null">sm.parent_id=#{parentId} and</if>
+				<if test="statusCode != null">sm.status_code=#{statusCode} and</if>
+			</where>
+		</trim>
+		ORDER BY
+			sm.sort_order ASC
+	</select>
+	
+	<resultMap type="Menu" id="menuMap">
+		<id property="menuId" javaType="java.lang.Long" column="menu_id"/>
+		<result property="menuText" javaType="java.lang.String" column="menu_text"/>
+		<result property="menuUrl" javaType="java.lang.String" column="menu_url"/>
+		<result property="menuIcon" javaType="java.lang.String" column="menu_icon"/>
+	</resultMap>
+</mapper>

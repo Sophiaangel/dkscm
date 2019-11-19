@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.ekgc.dkscm.dao.UserDao">
+	<select id="findByQueryForPage" parameterType="java.util.Map" resultMap="userMap">
+		SELECT
+			su.user_id,
+			su.user_no,
+			su.username,
+			su.cellphone,
+			su.password,
+			sr.role_id,
+			sr.role_name,
+			su.id_card,
+			su.email,
+			su.user_photo,
+			ss.status_id,
+			ss.status_code
+		FROM
+			sys_user su JOIN sys_role sr ON su.role_id=sr.role_id
+			JOIN sys_status ss ON su.status_code=ss.status_code
+		<trim suffixOverrides="and">
+			<where>
+				<if test="cellphone != null">su.cellphone=#{cellphone} and</if>
+			</where>
+		</trim>
+	</select>
+	
+	<resultMap type="User" id="userMap">
+		<id property="userId" javaType="java.lang.Long" column="user_id"/>
+		<result property="userNo" javaType="java.lang.String" column="user_no"/>
+		<result property="username" javaType="java.lang.String" column="username"/>
+		<result property="cellphone" javaType="java.lang.String" column="cellphone"/>
+		<result property="password" javaType="java.lang.String" column="password"/>
+		<result property="idCard" javaType="java.lang.String" column="id_card"/>
+		<result property="email" javaType="java.lang.String" column="email"/>
+		<result property="userPhoto" javaType="java.lang.String" column="user_photo"/>
+		<association property="role" javaType="Role">
+			<id property="roleId" javaType="java.lang.Long" column="role_id"/>
+			<result property="roleName" javaType="java.lang.String" column="role_name"/>
+		</association>
+		<association property="status" javaType="Status">
+			<id property="statusId" javaType="java.lang.Long" column="status_id"/>
+			<result property="statusCode" javaType="java.lang.String" column="status_code"/>
+		</association>
+	</resultMap> 
+</mapper>

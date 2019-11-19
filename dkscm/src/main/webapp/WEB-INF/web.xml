@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" 
+         id="WebApp_ID" version="3.1">
+<!-- 设定Spring核心容器所使用的配置文件路径 [BEGIN] -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			<!-- Spring核心配置文件 -->
+			classpath*:/applicationContext.xml
+			<!-- 为了减轻Spring核心配置文件负担，将其他和Spring结合的框架配置使用另外一个文件进行加载 -->
+			classpath*:/applicationContext-config.xml
+		</param-value>
+	</context-param>
+	<!-- 设定Spring核心容器所使用的配置文件路径 [END] -->
+	
+	<!-- 配置ContextLoaderListener，用于监听Web容器的启动，加载解析Spring配置文件启动Spring框架 [BEGIN] -->
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+	<!-- 配置ContextLoaderListener，用于监听Web容器的启动，加载解析Spring配置文件启动Spring框架 [END] -->
+	
+	<!-- 配置RequestContextListener，用于监听其他框架如果创建Request对象，那么由Spring进行负责 [BEGIN] -->
+	<listener>
+		<listener-class>
+			org.springframework.web.context.request.RequestContextListener
+		</listener-class>
+	</listener>
+	<!-- 配置RequestContextListener，用于监听其他框架如果创建Request对象，那么由Spring进行负责 [END] -->
+	
+	<!-- 配置Spring MVC核心Servlet [BEGIN] -->
+	<servlet>
+		<servlet-name>springmvc</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<!-- 将Servlet的实例化的时间提前到和Web容器启动的时候就开始 -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springmvc</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<!-- 配置Spring MVC核心Servlet [END] -->
+	
+	<!-- 配置编码过滤器 [BEGIN] -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>
+			org.springframework.web.filter.CharacterEncodingFilter
+		</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 配置编码过滤器 [END] -->
+	
+	<!-- 配置使用Spring的代理过滤器，将所有请求过滤到Shiro框架 [BEGIN] -->
+	<filter>
+		<!-- Spring容器将会根据filter-name的配置信息，来查找和该名字一致的id的bean对象 -->
+		<filter-name>shiroFilter</filter-name>
+		<filter-class>
+			org.springframework.web.filter.DelegatingFilterProxy
+		</filter-class>
+		<!-- 使用Shiro自己的生命周期管理方案 -->
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 配置使用Spring的代理过滤器，将所有请求过滤到Shiro框架 [END] -->
+</web-app>

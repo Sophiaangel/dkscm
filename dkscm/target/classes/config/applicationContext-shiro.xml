@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- Shiro核心配置文件 -->
+	
+	<!-- 配置Shiro的核心对象SecurityManager，用于引导整个Shiro框架 [BEGIN] -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- 如果需要进行认证，那么必须告诉Shiro如何进行认证 -->
+		<property name="realm" ref="shiroDBRealm"/>
+	</bean>
+	<!-- 配置Shiro的核心对象SecurityManager，用于引导整个Shiro框架 [END] -->
+	
+	<!-- Shiro核心过滤bean，所有的请求都会交给该bean进行处理 [BEGIN] -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- Shiro框架在工作的时候，有一个核心对象就是SecurityManager -->
+		<!-- 设定SecurityManager对应的bean -->
+		<property name="securityManager" ref="securityManager"/>
+		<!-- 设定当请求进行认证的时候，那么需要告知Shiro那个地址是进行请求认证 -->
+		<property name="loginUrl" value="/user/login"/>
+		<!--
+			对于shiro来说，如果在认证之前就有请求的地址，那么当认证成功之后，Shiro会重新向这个地址重定向，
+			但是，如果认证之前没有请求地址，或者是请求地址就是认证地址，那么就需要设定一个默认的重定向地址
+		-->
+		<property name="successUrl" value="/"/>
+		<!-- 配置认证的规则 -->
+		<property name="filterChainDefinitions">
+			<value>
+				<!--
+					需要特别注意的是，认证的顺序是从上到下匹配，如果一旦匹配上，将使用该规则，
+					对于Shiro来说，提供了如下的内置规则：
+					anon - 可以匿名使用
+					authc - 需要认证才能使用
+					logout - 表示进行退出
+					authcBasic - 没有参数表示httpBasic认证
+					perms - 授权
+					port - 当请求的url的端口不是8081是跳转到schemal://serverName:8081?queryString
+					rest - 根据请求的方法
+					roles - 角色
+					ssl - 表示安全的url请求
+					user - 表示必须存在用户
+				-->
+				/static/** = anon
+				/user/logout = logout
+				/** = authc
+			</value>
+		</property>
+	</bean>
+	<!-- Shiro核心过滤bean，所有的请求都会交给该bean进行处理 [END] -->
+</beans>
