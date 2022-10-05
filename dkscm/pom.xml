@@ -18,7 +18,7 @@
     	<mybatis.version>3.5.3</mybatis.version>
     	<mybatis-spring.version>2.0.3</mybatis-spring.version>
     	<druid.version>1.1.21</druid.version>
-    	<jackson-databind.version>2.10.1</jackson-databind.version>
+    	<jackson-databind.version>2.12.6.1</jackson-databind.version>
     	<shiro-spring.version>1.4.1</shiro-spring.version>
   	</properties>
 
